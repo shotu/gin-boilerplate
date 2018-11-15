@@ -45,7 +45,8 @@ func main() {
 	defer db.Close()
 	println("Connection to databse established")
 	db.AutoMigrate(&models.Movie{})
-
+	db.AutoMigrate(&models.User{})
+	
 	println("Done")
 	
 	r := gin.Default()
@@ -63,13 +64,13 @@ func main() {
 	// 	user := new(controllers.UserController)
 
 	// 	v1.POST("/user/signin", user.Signin)
-	// 	v1.POST("/user/signup", user.Signup)
+	// user := new(controllers.UserController)
+	// v1.POST("/user/signup", user.Signup)
 	// 	v1.GET("/user/signout", user.Signout)
-
 	// 	/*** START Article ***/
-		movie := new(controllers.MovieController)
-
-		v1.POST("/movie", movie.Create)
+	movie := new(controllers.MovieController)
+	v1.POST("/movie", movie.Create)
+	v1.GET("/movie", movie.All)
 	// 	v1.GET("/articles", article.All)
 	// 	v1.GET("/article/:id", article.One)
 	// 	v1.PUT("/article/:id", article.Update)

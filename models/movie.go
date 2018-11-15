@@ -20,7 +20,6 @@ type Movie struct {
 	Country 	string
 	Awards 		string
 	Poster 		string
-	Ratings 	JSONRaw 
 	Metascore float32
 	ImdbRating float32
 	imdbVotes int

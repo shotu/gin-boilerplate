@@ -1,10 +1,10 @@
 package controllers
 import (
+	"fmt"
 	"github.com/shotu/gin-boilerplate/models"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 )
-
 //ArticleController ...
 type MovieController struct{}
 
@@ -27,8 +27,22 @@ func (ctrl MovieController) Create(c *gin.Context) {
 	c.BindJSON(&movie)
 	db.Create(&movie)
 	c.JSON(200, movie)
+}
 
-	
+func (ctrl MovieController) All(c *gin.Context) {
+	db, err := gorm.Open("postgres", "dbname=gorm sslmode=disable")
+	if err != nil {
+		panic(err.Error())
+	 }
+
+	 var movies []models.Movie
+	//  var movie []models.Movie
+	 if err := db.Find(&movies).Error; err != nil {
+		c.AbortWithStatus(404)
+		fmt.Println(err)
+	} else {
+			c.JSON(200, movies)
+	}
 }
 
 //All ...
