@@ -18,11 +18,11 @@ The fastest way to deploy a restful api's with [Gin Framework](https://gin-gonic
 ### Installation
 
 ```
-$ go get github.com/Massad/gin-boilerplate
+$ go get https://github.com/shotu/gin-boilerplate
 ```
 
 ```
-$ cd $GOPATH/src/github.com/Massad/gin-boilerplate
+$ cd $GOPATH/src/https://github.com/shotu/gin-boilerplate
 ```
 
 ```
