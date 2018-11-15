@@ -1,16 +1,19 @@
 package main
-
 import (
 	"fmt"
-	"net/http"
-	"runtime"
-
-	"github.com/Massad/gin-boilerplate/controllers"
-	"github.com/Massad/gin-boilerplate/db"
-
-	"github.com/gin-gonic/contrib/sessions"
+	// "./greeting"
+	// "net/http"
+	// "runtime"
 	"github.com/gin-gonic/gin"
+	"github.com/shotu/gin-boilerplate/controllers"
+	// "github.com/shotu/gin-boilerplate/db"
+	// "github.com/gin-gonic/contrib/sessions"
+	"github.com/shotu/gin-boilerplate/models"
+	_"github.com/lib/pq"
+	"github.com/jinzhu/gorm"
 )
+
+
 
 //CORSMiddleware ...
 func CORSMiddleware() gin.HandlerFunc {
@@ -31,49 +34,75 @@ func CORSMiddleware() gin.HandlerFunc {
 	}
 }
 
+
 func main() {
+	
+	db, err := gorm.Open("postgres", "dbname=gorm sslmode=disable")
+	// // db, err := gorm.Open("postgres", "user=gorm password=gorm dbname=gorm sslmode=disable")
+	if err != nil {
+		 panic(err.Error())
+	}
+	defer db.Close()
+	println("Connection to databse established")
+	db.AutoMigrate(&models.Movie{})
+
+	println("Done")
+	
 	r := gin.Default()
 
-	store, _ := sessions.NewRedisStore(10, "tcp", "localhost:6379", "", []byte("secret"))
-	r.Use(sessions.Sessions("gin-boilerplate-session", store))
+	// store, _ := sessions.NewRedisStore(10, "tcp", "localhost:6379", "", []byte("secret"))
+	// r.Use(sessions.Sessions("gin-boilerplate-session", store))
 
 	r.Use(CORSMiddleware())
 
-	db.Init()
+	// db.Init()
 
 	v1 := r.Group("/v1")
-	{
-		/*** START USER ***/
-		user := new(controllers.UserController)
+	// {
+	// 	/*** START USER ***/
+	// 	user := new(controllers.UserController)
 
-		v1.POST("/user/signin", user.Signin)
-		v1.POST("/user/signup", user.Signup)
-		v1.GET("/user/signout", user.Signout)
+	// 	v1.POST("/user/signin", user.Signin)
+	// 	v1.POST("/user/signup", user.Signup)
+	// 	v1.GET("/user/signout", user.Signout)
 
-		/*** START Article ***/
-		article := new(controllers.ArticleController)
+	// 	/*** START Article ***/
+		movie := new(controllers.MovieController)
 
-		v1.POST("/article", article.Create)
-		v1.GET("/articles", article.All)
-		v1.GET("/article/:id", article.One)
-		v1.PUT("/article/:id", article.Update)
-		v1.DELETE("/article/:id", article.Delete)
-	}
+		v1.POST("/movie", movie.Create)
+	// 	v1.GET("/articles", article.All)
+	// 	v1.GET("/article/:id", article.One)
+	// 	v1.PUT("/article/:id", article.Update)
+	// 	v1.DELETE("/article/:id", article.Delete)
+	// }
 
-	r.LoadHTMLGlob("./public/html/*")
+	// r.LoadHTMLGlob("./public/html/*")
 
-	r.Static("/public", "./public")
+	// r.Static("/public", "./public")
 
-	r.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.html", gin.H{
-			"ginBoilerplateVersion": "v0.03",
-			"goVersion":             runtime.Version(),
-		})
-	})
+	// r.GET("/", func(c *gin.Context) {
+	// 	c.HTML(http.StatusOK, "index.html", gin.H{
+	// 		"ginBoilerplateVersion": "v0.03",
+	// 		"goVersion":             runtime.Version(),
+	// 	})
+	// })
 
-	r.NoRoute(func(c *gin.Context) {
-		c.HTML(404, "404.html", gin.H{})
-	})
+	// r.NoRoute(func(c *gin.Context) {
+	// 	c.HTML(404, "404.html", gin.H{})
+	// })
 
 	r.Run(":9000")
+}
+
+type User struct {
+	ID uint
+	UserName string
+	FirstName string
+	LastName string
+}
+
+var users []User = []User{
+	User{UserName:"manish", FirstName: "Manish", LastName: "Atri"},
+	User{UserName:"anish", FirstName: "Anish", LastName: "Atri"},
+	User{UserName:"lokesh", FirstName: "Lokesh", LastName: "Sharma"},
 }
